@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <style>
+    .lineStyle {
+      stroke: skyblue;
+      stroke-width: 10px;
+      transition: all 2s;
+      /* transform: rotate(45deg); */
+      transform-origin: center;
+      animation: xuanzhuang 2s linear infinite;
+    }
+    .lineStyle:hover {
+      stroke: bisque;
+    }
+
+    @keyframes xuanzhuang {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+  <body>
+    <svg width="400" height="400">
+      <line x1="200" y1="200" x2="350" y2="350" class="lineStyle" />
+      <polyline
+        points="300,300 350,300 350,350"
+        stroke="deeppink"
+        stroke-width="5px"
+        fill="none"
+      ></polyline>
+    </svg>
+  </body>
+</html>
