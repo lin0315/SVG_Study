@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      #box01 {
+        width: 2000px;
+        height: 1300px;
+        border: 1px solid #ccc;
+      }
+      .axis {
+        stroke: #999;
+        stroke-width: 2px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="box01">
+      <svg width="100%" height="100%" viewBox="0 0 1000 700">
+        <g id="zuobiao">
+          <!-- x轴 -->
+          <line class="axis" x1="50" y1="600" x2="950" y2="600" />
+          <path d="M 925,590 L 950,600 L 925,610" />
+          <text x="920" y="630">时间</text>
+          <!-- y轴 -->
+          <line class="axis" x1="100" y1="650" x2="100" y2="50" />
+          <path d="M 90,75 L 100,50 L 110,75" />
+          <text x="50" y="70">订单</text>
+        </g>
+
+        <g id="xkedu"></g>
+        <g id="barList"></g>
+        <g id="ykedu"></g>
+      </svg>
+    </div>
+    <script>
+      const data = [
+        {
+          date: "星期一",
+          order: "1000",
+        },
+        {
+          date: "星期二",
+          order: "700",
+        },
+        {
+          date: "星期三",
+          order: "600",
+        },
+        {
+          date: "星期四",
+          order: "1100",
+        },
+        {
+          date: "星期五",
+          order: "900",
+        },
+        {
+          date: "星期六",
+          order: "1200",
+        },
+        {
+          date: "星期日",
+          order: "1500",
+        },
+      ];
+
+      const xkeduEl = document.querySelector("#xkedu");
+      const ykeduEl = document.querySelector("#ykedu");
+      const barListEl = document.querySelector("#barList");
+
+      var jgLenght = 700 / data.length;
+      var yLength = 450 / 15;
+      for (let i = 1; i <= data.length; i++) {
+        renderKedu(i);
+      }
+
+      for (let j = 1; j <= 15; j++) {
+        ykeduEl.innerHTML =
+          ykeduEl.innerHTML +
+          `<line class="axis" x1="100" y1="${600 - yLength * j}" x2="120" y2=${
+            600 - yLength * j
+          }></line>` +
+          `<text x="50" y=${600 - yLength * j}>${100 * j}</text>`;
+      }
+
+      function renderKedu(index) {
+        const lineEl = document.createElement("line");
+        lineEl.className = "axis";
+        lineEl.setAttribute("x1", 100 + jgLenght * index);
+        lineEl.setAttribute("y1", "600");
+        lineEl.setAttribute("x2", 100 + jgLenght * index);
+        lineEl.setAttribute("y2", "580");
+        xkeduEl.innerHTML =
+          xkeduEl.innerHTML +
+          lineEl.outerHTML +
+          `<text x="${75 + jgLenght * index}" y=620>${
+            data[index - 1].date
+          }</text>`;
+
+        const color = `rgb(${parseInt(Math.random() * 255)},${parseInt(
+          Math.random() * 255
+        )},${parseInt(Math.random() * 255)}`;
+        barListEl.innerHTML =
+          barListEl.innerHTML +
+          `<rect x="${75 + jgLenght * index}" y="${
+            600 - yLength * (data[index - 1].order / 100)
+          }" width="50" height="${yLength * (data[index - 1].order / 100)}"
+          fill="${color}"
+          >`;
+      }
+    </script>
+  </body>
+</html>
