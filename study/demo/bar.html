@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body,
+      html {
+        padding: 0;
+        margin: 0;
+      }
+
+      #box {
+        margin: 40px 0 0 140px;
+        width: 150px;
+        height: 500px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="box">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        version="1.1"
+        width="100%"
+        height="100%"
+      >
+        <rect
+          class="bar_rect"
+          x="20"
+          y="0"
+          width="130"
+          height="500"
+          style="fill: #fff; stroke: #666; stroke-width: 2"
+          vector-effect="non-scaling-stroke"
+        />
+        <g id="kedu">
+          <line x1="0" y1="0" x2="20" y2="0" stroke="#666" stroke-width="2" />
+          <line
+            x1="10"
+            y1="50"
+            x2="20"
+            y2="50"
+            stroke="#666"
+            stroke-width="2"
+          />
+          <line
+            x1="0"
+            y1="100"
+            x2="20"
+            y2="100"
+            stroke="#666"
+            stroke-width="2"
+          />
+          <line
+            x1="10"
+            y1="150"
+            x2="20"
+            y2="150"
+            stroke="#666"
+            stroke-width="2"
+          />
+        </g>
+      </svg>
+    </div>
+
+    <script>
+      const options = {
+        majorTicksCount: 5, // 主刻度数量
+        majorTicksSize: 20, // 主刻度长度
+        minorTicksCount: 2, // 次刻度数量
+        minorTicksSize: 10, // 次刻度长度
+      };
+
+      // 跟元素
+      const rootEl = document.querySelector("#box");
+      const svgEl = rootEl.querySelector("svg");
+      const keduEl = document.querySelector("#kedu");
+      const rectEl = svgEl.querySelector(".bar_rect");
+
+      const width = rootEl.clientWidth;
+      const height = rootEl.clientHeight;
+      svgEl.setAttribute("x", width);
+      svgEl.setAttribute("y", height);
+      console.log("rootEl_width:" + width + "__height:" + height);
+      rederKeduDom();
+      function rederRect() {}
+
+      function rederKeduDom() {
+        const {
+          majorTicksCount,
+          majorTicksSize,
+          minorTicksCount,
+          minorTicksSize,
+        } = options;
+        let newkeduElHTMlStr = "";
+        // const majorStep = parseInt(height / majorTicksCount);
+        const count = majorTicksCount * minorTicksCount;
+        // 3__ 0 3 6
+        // 1__
+        const step = parseInt(height / count);
+        for (let i = 0; i <= count; i++) {
+          const isMinor = i % minorTicksCount == 0;
+          if (minorTicksCount <= 1) isMinor = true;
+          const x1 = isMinor ? 0 : 10;
+          const y1 = i * step;
+          const x2 = majorTicksSize;
+          const y2 = i * step;
+          newkeduElHTMlStr = newkeduElHTMlStr + getSvgLineTemp(x1, y1, x2, y2);
+          for (let j = 1; j < minorTicksCount; j++) {
+            console.log("AAAAAAAAA");
+          }
+        }
+        console.log("newkeduElHTMlStr>>>", newkeduElHTMlStr);
+        keduEl.innerHTML = newkeduElHTMlStr;
+      }
+
+      function getSvgLineTemp(x1, y1, x2, y2) {
+        return `<line x1=${x1} y1=${y1} x2=${x2} y2=${y2} stroke="#666" stroke-width="2"/>`;
+      }
+    </script>
+  </body>
+</html>
