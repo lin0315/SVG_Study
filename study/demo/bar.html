@@ -16,6 +16,10 @@
         width: 150px;
         height: 500px;
       }
+
+      #rect2 {
+        transition: height 1s ease;
+      }
     </style>
   </head>
   <body>
@@ -27,12 +31,22 @@
         height="100%"
       >
         <rect
+          id="rect2"
+          x="0"
+          y="0"
+          width="0"
+          height="0"
+          fill="skyblue"
+          stroke-width="0"
+          stroke="#666"
+        />
+        <rect
           class="bar_rect"
           x="20"
           y="0"
           width="130"
           height="500"
-          style="fill: #fff; stroke: #666; stroke-width: 2"
+          style="fill: rgba(0, 0, 0, 0); stroke: #666; stroke-width: 2"
           vector-effect="non-scaling-stroke"
         />
         <g id="kedu">
@@ -70,18 +84,11 @@
           </text>
         </g>
 
-        <rect
-          id="rect2"
-          x=""
-          y=""
-          width=""
-          height=""
-          fill="skyblue"
-          stroke-width="2"
-          stroke="#666"
-        />
         <text id="bar_value" x="" y="">30%</text>
       </svg>
+
+      <input id="keyNum" type="number" value="30" />
+      <button id="update">更改</button>
     </div>
 
     <script>
@@ -113,6 +120,7 @@
       console.log("rootEl_width:" + width + "__height:" + height);
       rederKeduDom();
       rederRect();
+      update(30);
       function rederRect() {
         const _height = getFontBoxHeight();
         const _width = getFontBoxWidth();
@@ -130,7 +138,6 @@
         valueEl.setAttribute("y", _height / 2 + (rectHeight - 5) / 2);
 
         // 绘制颜色矩形
-        const borderSize = options.borderSize;
         rect2El.setAttribute("y", _height / 2 + 50);
         rect2El.setAttribute("x", _width + options.majorTicksSize);
         rect2El.setAttribute("height", rectHeight - 5 - 50);
@@ -164,7 +171,8 @@
             // const tx = getFontBoxWidth();
             const tx = getFontBoxWidth() / 2;
             const ty = i * step + getFontBoxHeight();
-            newTextElHTmlStr = newTextElHTmlStr + getTextTemp(tx, ty);
+            const t = 100 - i * 10;
+            newTextElHTmlStr = newTextElHTmlStr + getTextTemp(tx, ty, t);
           }
         }
         console.log("newTextElHTmlStr>>>", newTextElHTmlStr);
@@ -177,10 +185,10 @@
       }
 
       // -------- 文本 -----------
-      function getTextTemp(x, y) {
+      function getTextTemp(x, y, t) {
         return `
           <text x="${x}" y="${y}" text-anchor="middle" style="font-size: 18px">
-            100
+          ${t}
           </text>
 
         `;
@@ -202,6 +210,27 @@
         const length = maxNum.toString().length;
         return 10 * length + 2 + textToTickDistance;
       }
+
+      // 更新
+      function update(num) {
+        if (num < 0 || num > 100) return;
+        newNum = 100 - num;
+        const _height = getFontBoxHeight();
+        const rectH = rectEl.getAttribute("height");
+        const value = rectH * (newNum / 100);
+        rect2El.setAttribute("y", _height / 2 + value);
+        rect2El.setAttribute("height", rectHeight - 5 - value);
+
+        valueEl.innerHTML = num + "%";
+      }
+
+      const inputEl = document.getElementById("keyNum");
+      const updateEl = document.getElementById("update");
+
+      updateEl.addEventListener("click", (e) => {
+        const value = inputEl.value;
+        update(value);
+      });
     </script>
   </body>
 </html>
