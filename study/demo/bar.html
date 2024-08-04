@@ -62,6 +62,25 @@
             stroke-width="2"
           />
         </g>
+
+        <g id="dushu">
+          <!-- 13+4  14+5 18+6  22+7   -->
+          <text x="2" y="2" text-anchor="middle" style="font-size: 18px">
+            5
+          </text>
+        </g>
+
+        <rect
+          id="rect2"
+          x=""
+          y=""
+          width=""
+          height=""
+          fill="skyblue"
+          stroke-width="2"
+          stroke="#666"
+        />
+        <text id="bar_value" x="" y="">30%</text>
       </svg>
     </div>
 
@@ -71,6 +90,10 @@
         majorTicksSize: 20, // 主刻度长度
         minorTicksCount: 2, // 次刻度数量
         minorTicksSize: 10, // 次刻度长度
+        fontSize: 14, // 度数文本字号
+        textToTickDistance: 4, //度数文本与刻度线距离
+        maxNum: 100,
+        borderSize: 2,
       };
 
       // 跟元素
@@ -78,14 +101,41 @@
       const svgEl = rootEl.querySelector("svg");
       const keduEl = document.querySelector("#kedu");
       const rectEl = svgEl.querySelector(".bar_rect");
+      const dushuEl = svgEl.querySelector("#dushu");
+      const valueEl = svgEl.querySelector("#bar_value");
+      const rect2El = svgEl.querySelector("#rect2");
 
       const width = rootEl.clientWidth;
       const height = rootEl.clientHeight;
+      const rectHeight = height - getFontBoxHeight();
       svgEl.setAttribute("x", width);
       svgEl.setAttribute("y", height);
       console.log("rootEl_width:" + width + "__height:" + height);
       rederKeduDom();
-      function rederRect() {}
+      rederRect();
+      function rederRect() {
+        const _height = getFontBoxHeight();
+        const _width = getFontBoxWidth();
+        rectEl.setAttribute("y", _height / 2);
+        rectEl.setAttribute("x", _width + options.majorTicksSize);
+        rectEl.setAttribute("height", rectHeight - 5);
+        rectEl.setAttribute("width", width - _width - options.majorTicksSize);
+
+        // 设置值
+        const valueElX =
+          _width +
+          options.majorTicksSize +
+          (width - _width - options.majorTicksSize) / 2;
+        valueEl.setAttribute("x", valueElX - 10);
+        valueEl.setAttribute("y", _height / 2 + (rectHeight - 5) / 2);
+
+        // 绘制颜色矩形
+        const borderSize = options.borderSize;
+        rect2El.setAttribute("y", _height / 2 + 50);
+        rect2El.setAttribute("x", _width + options.majorTicksSize);
+        rect2El.setAttribute("height", rectHeight - 5 - 50);
+        rect2El.setAttribute("width", width - _width - options.majorTicksSize);
+      }
 
       function rederKeduDom() {
         const {
@@ -95,29 +145,62 @@
           minorTicksSize,
         } = options;
         let newkeduElHTMlStr = "";
-        // const majorStep = parseInt(height / majorTicksCount);
+        let newTextElHTmlStr = "";
         const count = majorTicksCount * minorTicksCount;
         // 3__ 0 3 6
         // 1__
-        const step = parseInt(height / count);
+        const step = parseInt(rectHeight / count);
         for (let i = 0; i <= count; i++) {
-          const isMinor = i % minorTicksCount == 0;
-          if (minorTicksCount <= 1) isMinor = true;
-          const x1 = isMinor ? 0 : 10;
-          const y1 = i * step;
-          const x2 = majorTicksSize;
-          const y2 = i * step;
+          const isMajor = i % minorTicksCount == 0; // 是否为主刻度线
+          if (minorTicksCount <= 1) isMajor = true;
+          const x1 = (isMajor ? 0 : 10) + getFontBoxWidth();
+          const y1 = i * step + getFontBoxHeight() / 2;
+          const x2 = majorTicksSize + getFontBoxWidth();
+          const y2 = i * step + getFontBoxHeight() / 2;
           newkeduElHTMlStr = newkeduElHTMlStr + getSvgLineTemp(x1, y1, x2, y2);
-          for (let j = 1; j < minorTicksCount; j++) {
-            console.log("AAAAAAAAA");
+
+          // 主刻度线绘制度数文本
+          if (isMajor) {
+            // const tx = getFontBoxWidth();
+            const tx = getFontBoxWidth() / 2;
+            const ty = i * step + getFontBoxHeight();
+            newTextElHTmlStr = newTextElHTmlStr + getTextTemp(tx, ty);
           }
         }
-        console.log("newkeduElHTMlStr>>>", newkeduElHTMlStr);
+        console.log("newTextElHTmlStr>>>", newTextElHTmlStr);
         keduEl.innerHTML = newkeduElHTMlStr;
+        dushuEl.innerHTML = newTextElHTmlStr;
       }
 
       function getSvgLineTemp(x1, y1, x2, y2) {
         return `<line x1=${x1} y1=${y1} x2=${x2} y2=${y2} stroke="#666" stroke-width="2"/>`;
+      }
+
+      // -------- 文本 -----------
+      function getTextTemp(x, y) {
+        return `
+          <text x="${x}" y="${y}" text-anchor="middle" style="font-size: 18px">
+            100
+          </text>
+
+        `;
+      }
+
+      function getFontBoxHeight() {
+        const size = options.fontSize;
+        let num = size;
+        if (size > 13) {
+          num += Math.max((size - 14) % 4, 1);
+        }
+        return num;
+      }
+
+      function getFontBoxWidth() {
+        const size = options.fontSize;
+        const maxNum = options.maxNum;
+        const textToTickDistance = options.textToTickDistance;
+        const length = maxNum.toString().length;
+        return 10 * length + 2 + textToTickDistance;
       }
     </script>
   </body>
