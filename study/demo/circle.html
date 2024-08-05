@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>半圆进度条 SVG</title>
+    <style>
+      .progress-circle {
+        fill: none;
+        stroke: #3498db; /* 蓝色边框 */
+        stroke-width: 10; /* 边框宽度 */
+        stroke-linecap: round; /* 圆形线帽 */
+        transform: rotate(-90deg); /* 调整起始角度 */
+        transform-origin: center;
+      }
+      .progress-bar {
+        fill: none;
+        stroke: #e74c3c; /* 红色进度条 */
+        stroke-width: 10; /* 与圆边框相同宽度 */
+        stroke-dasharray: 50 150; /* 实线部分和空白部分 */
+        stroke-dashoffset: 150; /* 初始时进度条为空，即偏移量为总长度 */
+        transition: stroke-dashoffset 0.5s ease; /* 平滑过渡效果 */
+      }
+    </style>
+  </head>
+  <body>
+    <svg viewBox="0 0 100 100">
+      <clipPath id="myClip">
+        <!--
+          圆圈外的所有东西都会被裁剪掉，因此不可见。
+        -->
+        <circle cx="40" cy="35" r="35" />
+      </clipPath>
+
+      <!-- 作为引用元素（英文原文：for reference）的黑色心形 -->
+      <path
+        id="heart"
+        d="M10,30 A20,20,0,0,1,50,30 A20,20,0,0,1,90,30 Q90,60,50,90 Q10,60,10,30 Z"
+      />
+
+      <!--
+        和上述黑色心形形状相同的红色心形，剪切路径是上面定义的圆；
+        红色心形只有在圆内的部分可见。
+      -->
+      <use clip-path="url(#myClip)" xlink:href="#heart" fill="red" />
+    </svg>
+  </body>
+</html>
